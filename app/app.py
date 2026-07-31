@@ -308,9 +308,22 @@ QUICK_QUESTIONS = [
 
 # ── Session state ─────────────────────────────────────────────────────────────
 
+def _default_api_key() -> str:
+    """Seed the session key from a server-side secret so the deployed demo is
+    pre-keyed and "just works". Order: Streamlit secret → env var → empty
+    (visitor pastes their own in the sidebar). st.secrets raises if no secrets
+    file exists locally, so it's guarded."""
+    try:
+        if "OPENAI_API_KEY" in st.secrets:
+            return st.secrets["OPENAI_API_KEY"]
+    except Exception:
+        pass
+    return os.environ.get("OPENAI_API_KEY", "")
+
+
 def _init():
     defaults = {
-        "api_key":             os.environ.get("OPENAI_API_KEY", ""),
+        "api_key":             _default_api_key(),
         "company_name":        "",
         "corpus_loaded":       False,
         "pipeline":            None,
@@ -327,6 +340,39 @@ def _init():
             st.session_state[k] = v
 
 _init()
+
+
+# ── Public-demo rate limit ────────────────────────────────────────────────────
+# Global (cross-session) cap on questions per day, enforced before any OpenAI
+# call so a stray bot can't drain the shared demo key. Only applies while the
+# embedded/shared key is in use — visitors who paste their own key are never
+# capped. The prepaid OpenAI balance (auto-recharge off) is the hard backstop.
+DAILY_QUESTION_CAP = 30
+
+@st.cache_resource
+def _usage_counter() -> dict:
+    return {"date": None, "count": 0}
+
+
+def _using_shared_key() -> bool:
+    """True when the active key is the server-embedded demo key (not a visitor's own)."""
+    shared = _default_api_key()
+    return bool(shared) and st.session_state.get("api_key") == shared
+
+
+def _cap_reached() -> bool:
+    """True if today's global quota for the shared key is exhausted. Resets on a
+    new calendar day (and on app restart — the OpenAI balance is the backstop)."""
+    from datetime import date
+    c = _usage_counter()
+    today = date.today().isoformat()
+    if c["date"] != today:
+        c["date"], c["count"] = today, 0
+    return c["count"] >= DAILY_QUESTION_CAP
+
+
+def _record_question() -> None:
+    _usage_counter()["count"] += 1
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -677,14 +723,24 @@ with st.sidebar:
     st.markdown("<div style='margin-top:14px;'></div>", unsafe_allow_html=True)
 
     # ── API Key ───────────────────────────────────────────────────────────────
-    st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key</div>', unsafe_allow_html=True)
-    st.markdown('<div class="sb-hint">Paste your key in the box below to get started.</div>', unsafe_allow_html=True)
+    _has_demo_key = bool(_default_api_key())
+    if _has_demo_key:
+        st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key (optional)</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sb-hint">A demo key is already set up — just load a demo org below. '
+                    'Optionally paste your own key to use it instead.</div>', unsafe_allow_html=True)
+        _key_help = ("A shared demo key powers this public app (rate-limited). Paste your own key "
+                     "to bypass the limit — it stays in your browser session only.")
+    else:
+        st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key</div>', unsafe_allow_html=True)
+        st.markdown('<div class="sb-hint">Paste your key in the box below to get started.</div>', unsafe_allow_html=True)
+        _key_help = ("Your key is used only in this session and never stored. "
+                     "Get one at platform.openai.com/api-keys")
     api_key_input = st.text_input(
         "OpenAI API Key", type="password",
         value=st.session_state.api_key,
         placeholder="Type or paste here — sk-...",
         label_visibility="collapsed",
-        help="Your key is used only in this session and never stored. Get one at platform.openai.com/api-keys",
+        help=_key_help,
     )
     if api_key_input:
         st.session_state.api_key = api_key_input
@@ -980,6 +1036,15 @@ if query:
             st.warning(msg)
             st.session_state.chat_history.append({"role": "assistant", "content": msg})
 
+        elif _using_shared_key() and _cap_reached():
+            cap_msg = (
+                f"This public demo is capped at {DAILY_QUESTION_CAP} questions per day "
+                "to protect a shared API key. Please try again tomorrow — or paste your "
+                "own OpenAI key in the sidebar to keep going."
+            )
+            st.info(cap_msg)
+            st.session_state.chat_history.append({"role": "assistant", "content": cap_msg})
+
         else:
             with st.spinner("Analyzing your policy documents…"):
                 result = pipeline.query(
@@ -987,6 +1052,8 @@ if query:
                     session=session,
                     use_agent=st.session_state.use_agent,
                 )
+            if _using_shared_key():
+                _record_question()
             render_response(result)
             st.session_state.chat_history.append({
                 "role":    "assistant",

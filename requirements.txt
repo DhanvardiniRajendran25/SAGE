@@ -1,0 +1,6 @@
+# Streamlit Community Cloud looks for requirements.txt at the repository root.
+# Reuse the app's dependency list, then add the sqlite backport that the
+# chromadb shim in app/app.py needs on Streamlit Cloud (its system sqlite3 is
+# too old). Gated to Linux so local Windows / Docker installs are unaffected.
+-r app/requirements.txt
+pysqlite3-binary; sys_platform == "linux"
