@@ -88,21 +88,23 @@ footer { display: none !important; }
     padding: 0 12px 24px 12px !important;
 }
 
-/* ── Sidebar section card ── */
-.sb-section {
-    background: #0d1424;
-    border: 1px solid rgba(99,102,241,0.13);
-    border-radius: 10px;
-    padding: 14px 14px 12px 14px;
-    margin-bottom: 10px;
-}
-.sb-label {
-    font-size: 10px;
+/* ── Sidebar section header (heading only — NOT a box, so it can't be
+      mistaken for an input field) ── */
+.sb-header {
+    font-size: 11px;
     font-weight: 700;
-    color: #4b5a7a;
+    color: #8b9db8;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 10px;
+    margin: 20px 2px 8px 2px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(99,102,241,0.15);
+}
+.sb-hint {
+    font-size: 11px;
+    color: #5b6b8c;
+    margin: 0 2px 8px 2px;
+    line-height: 1.5;
 }
 
 /* ── Sidebar secondary buttons ── */
@@ -675,22 +677,24 @@ with st.sidebar:
     st.markdown("<div style='margin-top:14px;'></div>", unsafe_allow_html=True)
 
     # ── API Key ───────────────────────────────────────────────────────────────
-    st.markdown('<div class="sb-section"><div class="sb-label">🔑 OpenAI API Key</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-hint">Paste your key in the box below to get started.</div>', unsafe_allow_html=True)
     api_key_input = st.text_input(
-        "api_key", type="password",
+        "OpenAI API Key", type="password",
         value=st.session_state.api_key,
-        placeholder="sk-…",
+        placeholder="Type or paste here — sk-...",
         label_visibility="collapsed",
+        help="Your key is used only in this session and never stored. Get one at platform.openai.com/api-keys",
     )
     if api_key_input:
         st.session_state.api_key = api_key_input
-    st.markdown("</div>", unsafe_allow_html=True)
 
     # ── Policy Documents ──────────────────────────────────────────────────────
-    st.markdown('<div class="sb-section"><div class="sb-label">📄 Policy Documents</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-header">📄 Step 2 · Policy Documents</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-hint">Upload your own PDF/TXT policies, or pick a demo org below.</div>', unsafe_allow_html=True)
 
     company_name_input = st.text_input(
-        "org", placeholder="Organization name…",
+        "Organization name", placeholder="Your organization name…",
         value="", label_visibility="collapsed",
     )
     uploaded_files = st.file_uploader(
@@ -762,16 +766,13 @@ with st.sidebar:
     if st.session_state.get("_load_msg"):
         st.success(st.session_state["_load_msg"])
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
     # ── Settings ──────────────────────────────────────────────────────────────
-    st.markdown('<div class="sb-section"><div class="sb-label">⚙️ Settings</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-header">⚙️ Settings</div>', unsafe_allow_html=True)
     st.session_state.use_agent = st.toggle(
         "LangGraph ReAct Agent",
         value=st.session_state.use_agent,
         help="Multi-step reasoning agent. Off = faster direct mode.",
     )
-    st.markdown("</div>", unsafe_allow_html=True)
 
     # ── Actions (visible after loading) ───────────────────────────────────────
     if st.session_state.corpus_loaded:
