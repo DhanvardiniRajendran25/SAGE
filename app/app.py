@@ -61,6 +61,17 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
 }
 h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 
+/* Keep Streamlit's Material icons rendering as glyphs (the Inter override above
+   would otherwise turn ligatures like "upload"/"keyboard_double_arrow_right"
+   into literal text). Restore the icon font on icon elements only. */
+[data-testid="stIconMaterial"],
+span.material-icons, span.material-icons-outlined, span.material-icons-round,
+span.material-icons-sharp, span.material-symbols-outlined,
+span.material-symbols-rounded, span.material-symbols-sharp {
+    font-family: 'Material Symbols Rounded', 'Material Symbols Outlined',
+                 'Material Icons', 'Material Icons Outlined' !important;
+}
+
 /* ── App shell ── */
 [data-testid="stAppViewContainer"] > .main {
     background:
@@ -839,41 +850,7 @@ with st.sidebar:
                 _start_new_chat()
 
 
-# ── Main: page header ─────────────────────────────────────────────────────────
-
-company = st.session_state.get("company_name", "")
-_status = ""
-if st.session_state.corpus_loaded:
-    _status = (
-        f'<div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#9aa3bd;'
-        f'white-space:nowrap;">'
-        f'<span style="width:7px;height:7px;border-radius:50%;background:#34d399;'
-        f'box-shadow:0 0 9px rgba(52,211,153,0.65);"></span>{company[:22]}</div>'
-    )
-
-st.markdown(f"""
-<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;
-            padding:15px 20px;margin-bottom:16px;border-radius:16px;
-            background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);">
-  <div style="display:flex;align-items:center;gap:13px;">
-    <div style="width:40px;height:40px;border-radius:11px;flex-shrink:0;
-                background:linear-gradient(140deg,#4f46e5,#7c73ff);
-                display:flex;align-items:center;justify-content:center;font-size:21px;
-                box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14);">🛡️</div>
-    <div>
-      <div style="font-size:17px;font-weight:700;color:#f4f6fb;letter-spacing:-0.02em;line-height:1.15;">
-        SAGE&nbsp;&nbsp;<span style="font-weight:500;color:#8b93ab;">Compliance Assistant</span>
-      </div>
-      <div style="font-size:11.5px;color:#5b6480;margin-top:2px;">
-        Policy-grounded reasoning with citations and audit trails
-      </div>
-    </div>
-  </div>
-  {_status}
-</div>
-""", unsafe_allow_html=True)
-
-# New Chat button — separate row, right-aligned, only when chat has content
+# ── Main: New Chat button (separate row, right-aligned, only when chat has content) ──
 if st.session_state.corpus_loaded and st.session_state.chat_history:
     _, col_nc = st.columns([5, 1])
     with col_nc:
