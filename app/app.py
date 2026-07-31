@@ -722,31 +722,15 @@ with st.sidebar:
 
     st.markdown("<div style='margin-top:14px;'></div>", unsafe_allow_html=True)
 
-    # ── API Key ───────────────────────────────────────────────────────────────
-    _has_demo_key = bool(_default_api_key())
-    if _has_demo_key:
-        st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key (optional)</div>', unsafe_allow_html=True)
-        st.markdown('<div class="sb-hint">A demo key is already set up — just load a demo org below. '
-                    'Optionally paste your own key to use it instead.</div>', unsafe_allow_html=True)
-        _key_help = ("A shared demo key powers this public app (rate-limited). Paste your own key "
-                     "to bypass the limit — it stays in your browser session only.")
-    else:
-        st.markdown('<div class="sb-header">🔑 Step 1 · OpenAI API Key</div>', unsafe_allow_html=True)
-        st.markdown('<div class="sb-hint">Paste your key in the box below to get started.</div>', unsafe_allow_html=True)
-        _key_help = ("Your key is used only in this session and never stored. "
-                     "Get one at platform.openai.com/api-keys")
-    api_key_input = st.text_input(
-        "OpenAI API Key", type="password",
-        value=st.session_state.api_key,
-        placeholder="Type or paste here — sk-...",
-        label_visibility="collapsed",
-        help=_key_help,
-    )
-    if api_key_input:
-        st.session_state.api_key = api_key_input
+    # ── API key ───────────────────────────────────────────────────────────────
+    # The key is provided by the server (Streamlit secret / env var) and is never
+    # exposed in the UI, so it can't be revealed or copied. If it's missing, warn.
+    if not st.session_state.api_key:
+        st.warning("⚠️ Server API key not configured. Set OPENAI_API_KEY in the app's "
+                   "Streamlit secrets (or environment) to enable SAGE.")
 
     # ── Policy Documents ──────────────────────────────────────────────────────
-    st.markdown('<div class="sb-header">📄 Step 2 · Policy Documents</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sb-header">📄 Policy Documents</div>', unsafe_allow_html=True)
     st.markdown('<div class="sb-hint">Upload your own PDF/TXT policies, or pick a demo org below.</div>', unsafe_allow_html=True)
 
     company_name_input = st.text_input(
@@ -760,8 +744,7 @@ with st.sidebar:
     )
 
     if uploaded_files:
-        if st.button("🚀 Load & Index", use_container_width=True, type="primary",
-                     disabled=not st.session_state.api_key):
+        if st.button("🚀 Load & Index", use_container_width=True, type="primary"):
             try:
                 nc, ns, _ = load_pipeline(
                     st.session_state.api_key,
@@ -782,8 +765,7 @@ with st.sidebar:
             label_visibility="collapsed",
         )
         if selected_demo:
-            if st.button("🎯 Load Demo", use_container_width=True, type="primary",
-                         disabled=not st.session_state.api_key):
+            if st.button("🎯 Load Demo", use_container_width=True, type="primary"):
                 try:
                     org = DEMO_ORGANIZATIONS[selected_demo]
                     with st.spinner(f"Loading {org['name']}…"):
@@ -1039,8 +1021,7 @@ if query:
         elif _using_shared_key() and _cap_reached():
             cap_msg = (
                 f"This public demo is capped at {DAILY_QUESTION_CAP} questions per day "
-                "to protect a shared API key. Please try again tomorrow — or paste your "
-                "own OpenAI key in the sidebar to keep going."
+                "to protect the shared API key. Please check back tomorrow."
             )
             st.info(cap_msg)
             st.session_state.chat_history.append({"role": "assistant", "content": cap_msg})
