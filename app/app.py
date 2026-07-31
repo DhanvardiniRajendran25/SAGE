@@ -40,7 +40,7 @@ from sage.prompts import build_system_prompt, detect_org_type
 # ── Page config ───────────────────────────────────────────────────────────────
 
 st.set_page_config(
-    page_title="SAGE — Compliance Assistant",
+    page_title="SAGE Compliance Assistant",
     page_icon="🛡️",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -50,9 +50,23 @@ st.set_page_config(
 
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700;800&display=swap');
+
+/* ── Typography base ── */
+html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
+[data-testid="stAppViewContainer"] *, [data-testid="stSidebar"] * {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
+
 /* ── App shell ── */
 [data-testid="stAppViewContainer"] > .main {
-    background: #060c1a;
+    background:
+        radial-gradient(900px 500px at 15% -8%, rgba(99,102,241,0.10), transparent 60%),
+        radial-gradient(760px 460px at 92% 4%, rgba(56,189,248,0.06), transparent 55%),
+        #05070f;
 }
 
 /* ── Hide Streamlit footer and main menu only ── */
@@ -61,7 +75,7 @@ footer { display: none !important; }
 
 /* ── Blend Streamlit header into background (keeps sidebar toggle working) ── */
 [data-testid="stHeader"] {
-    background: #060c1a !important;
+    background: transparent !important;
     border-bottom: none !important;
     box-shadow: none !important;
 }
@@ -79,32 +93,32 @@ footer { display: none !important; }
 [data-testid="stSidebar"] {
     display: block !important;
     visibility: visible !important;
-    background: #07091c !important;
-    border-right: 1px solid rgba(99,102,241,0.14) !important;
+    background: #080a12 !important;
+    border-right: 1px solid rgba(255,255,255,0.06) !important;
 }
 [data-testid="stSidebarContent"],
 [data-testid="stSidebarUserContent"] {
-    background: #07091c !important;
-    padding: 0 12px 24px 12px !important;
+    background: transparent !important;
+    padding: 0 14px 24px 14px !important;
 }
 
 /* ── Sidebar section header (heading only — NOT a box, so it can't be
       mistaken for an input field) ── */
 .sb-header {
-    font-size: 11px;
-    font-weight: 700;
-    color: #8b9db8;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #7681a3;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    margin: 20px 2px 8px 2px;
-    padding-bottom: 6px;
-    border-bottom: 1px solid rgba(99,102,241,0.15);
+    letter-spacing: 1.4px;
+    margin: 22px 2px 10px 2px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 .sb-hint {
-    font-size: 11px;
-    color: #5b6b8c;
-    margin: 0 2px 8px 2px;
-    line-height: 1.5;
+    font-size: 11.5px;
+    color: #5b6480;
+    margin: 0 2px 9px 2px;
+    line-height: 1.55;
 }
 
 /* ── Sidebar secondary buttons ── */
@@ -125,52 +139,51 @@ footer { display: none !important; }
 
 /* ── Sidebar primary button (Load & Index) ── */
 [data-testid="stSidebar"] [data-testid="stBaseButton-primary"] {
-    background: linear-gradient(135deg, #3730a3, #4f46e5) !important;
-    border: none !important;
+    background: #4f46e5 !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
     color: #ffffff !important;
     font-weight: 600 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 4px 16px rgba(79,70,229,0.3) !important;
-    transition: all 0.2s ease !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+    transition: background 0.16s ease, transform 0.16s ease !important;
 }
 [data-testid="stSidebar"] [data-testid="stBaseButton-primary"]:hover {
-    background: linear-gradient(135deg, #312e81, #4338ca) !important;
-    box-shadow: 0 6px 22px rgba(79,70,229,0.45) !important;
+    background: #6366f1 !important;
     transform: translateY(-1px) !important;
 }
 
 /* ── Main area: chip / action secondary buttons ── */
 section[data-testid="stMain"] [data-testid="stBaseButton-secondary"] {
-    background: #0d1628 !important;
-    border: 1px solid rgba(99,102,241,0.22) !important;
-    color: #8b9cf4 !important;
-    border-radius: 22px !important;
+    background: rgba(255,255,255,0.02) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    color: #b8c1da !important;
+    border-radius: 11px !important;
     font-size: 13px !important;
-    font-weight: 500 !important;
+    font-weight: 450 !important;
     text-align: left !important;
-    transition: all 0.18s ease !important;
+    padding: 12px 15px !important;
+    transition: border-color 0.16s ease, background 0.16s ease, transform 0.16s ease !important;
 }
 section[data-testid="stMain"] [data-testid="stBaseButton-secondary"]:hover {
-    background: #132040 !important;
-    border-color: rgba(99,102,241,0.55) !important;
-    color: #c7d2fe !important;
+    background: rgba(99,102,241,0.08) !important;
+    border-color: rgba(129,140,248,0.45) !important;
+    color: #eef1fb !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 4px 14px rgba(99,102,241,0.18) !important;
+    box-shadow: none !important;
 }
 
 /* ── Main area: New Chat primary button ── */
 section[data-testid="stMain"] [data-testid="stBaseButton-primary"] {
-    background: linear-gradient(135deg, #312e81, #4f46e5) !important;
-    border: none !important;
+    background: #4f46e5 !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
     color: #ffffff !important;
     font-weight: 600 !important;
-    border-radius: 8px !important;
-    box-shadow: 0 3px 10px rgba(79,70,229,0.28) !important;
-    transition: all 0.2s ease !important;
+    border-radius: 9px !important;
+    box-shadow: none !important;
+    transition: background 0.16s ease, transform 0.16s ease !important;
 }
 section[data-testid="stMain"] [data-testid="stBaseButton-primary"]:hover {
-    background: linear-gradient(135deg, #3730a3, #4338ca) !important;
-    box-shadow: 0 5px 18px rgba(79,70,229,0.42) !important;
+    background: #6366f1 !important;
     transform: translateY(-1px) !important;
 }
 
@@ -251,27 +264,22 @@ section[data-testid="stMain"] [data-testid="stBaseButton-primary"]:hover {
 
 /* ── Feature cards (welcome screen) ── */
 .feat-card {
-    background: linear-gradient(145deg, #0b1220, #101b34);
-    border: 1px solid rgba(99,102,241,0.15);
-    border-radius: 14px;
-    padding: 20px;
-    min-height: 110px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 16px;
+    padding: 22px 20px;
+    min-height: 132px;
+    transition: border-color 0.18s ease, background 0.18s ease;
 }
-.feat-card h4 { color: #e2e8f0; margin: 0 0 8px; font-size: 14px; font-weight: 600; }
-.feat-card p  { color: #94a3b8; margin: 0; font-size: 12.5px; line-height: 1.65; }
-
-/* ── Status pill ── */
-.pill {
-    display: inline-block;
-    padding: 2px 9px;
-    border-radius: 20px;
-    font-size: 11px;
-    font-weight: 600;
-    white-space: nowrap;
-    letter-spacing: 0.3px;
+.feat-card:hover { border-color: rgba(129,140,248,0.35); background: rgba(99,102,241,0.05); }
+.feat-card .fc-ico {
+    width: 34px; height: 34px; border-radius: 9px; margin-bottom: 13px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(99,102,241,0.12); border: 1px solid rgba(129,140,248,0.28);
+    font-size: 16px;
 }
-.pill-ready { background:rgba(74,222,128,0.1); color:#4ade80; border:1px solid rgba(74,222,128,0.25); }
-.pill-setup { background:rgba(251,191,36,0.1); color:#fbbf24; border:1px solid rgba(251,191,36,0.25); }
+.feat-card h4 { color: #eef1fb; margin: 0 0 7px; font-size: 14.5px; font-weight: 600; }
+.feat-card p  { color: #8b93ab; margin: 0; font-size: 12.5px; line-height: 1.7; }
 
 /* ── Divider ── */
 hr { border-color: rgba(99,102,241,0.1) !important; margin: 8px 0 !important; }
@@ -523,7 +531,7 @@ def render_response(result: dict):
     sev_color  = RISK_COLOR.get(sev.get("band", "Unknown"), "#6b7280")
     conf_v     = conf.get("score", 0)
     sess       = st.session_state.get("session")
-    turn       = sess.turn_count if sess else "—"
+    turn       = sess.turn_count if sess else 0
 
     st.markdown(
         f"<div style='margin:8px 0 4px;font-size:12px;color:#3d4f6b;'>"
@@ -567,7 +575,7 @@ def render_response(result: dict):
             for c in conflicts:
                 st.markdown(
                     f'<div class="conflict-box">'
-                    f'⚠️ <strong>[{c["id"]}] {c["name"]}</strong>  —  Severity: {c["severity"]}<br>'
+                    f'⚠️ <strong>[{c["id"]}] {c["name"]}</strong> &nbsp;·&nbsp; Severity: {c["severity"]}<br>'
                     f'<code style="font-size:12px;">{c["policy_a"]}</code> '
                     f'↔ <code style="font-size:12px;">{c["policy_b"]}</code><br>'
                     f'<span style="font-size:12.5px;">{c["description"]}</span>'
@@ -638,8 +646,8 @@ def render_report():
     st.markdown("**Session Report**")
     c1, c2, c3 = st.columns(3)
     c1.metric("Total Queries",  stats["total"])
-    c2.metric("Avg Latency",    f"{stats.get('avg_latency','—')}s")
-    c3.metric("Avg Confidence", f"{stats.get('avg_confidence','—')}/100")
+    c2.metric("Avg Latency",    f"{stats.get('avg_latency', 0)}s")
+    c3.metric("Avg Confidence", f"{stats.get('avg_confidence', 0)}/100")
 
     rdb = stats.get("risk_dist", {})
     if rdb:
@@ -653,7 +661,7 @@ def render_report():
         for e in reversed(st.session_state.audit_logger.recent(10)):
             st.markdown(
                 f"`{e['entry_id']}` · {e['timestamp'][:19]} · "
-                f"Risk: **{e['risk_level']}** · Conf: {e.get('confidence_score') or '—'}/100  \n"
+                f"Risk: **{e['risk_level']}** · Conf: {e.get('confidence_score') or 'N/A'}/100  \n"
                 f"> {e['query'][:80]}…"
             )
 
@@ -703,12 +711,15 @@ with st.sidebar:
 
     # ── Brand ─────────────────────────────────────────────────────────────────
     st.markdown("""
-<div style="padding:18px 2px 14px 2px;">
-  <div style="display:flex;align-items:center;gap:10px;">
-    <span style="font-size:26px;line-height:1;filter:drop-shadow(0 0 8px rgba(99,102,241,0.5));">🛡️</span>
+<div style="padding:20px 2px 4px 2px;">
+  <div style="display:flex;align-items:center;gap:11px;">
+    <div style="width:37px;height:37px;border-radius:11px;
+                background:linear-gradient(140deg,#4f46e5,#7c73ff);
+                display:flex;align-items:center;justify-content:center;font-size:19px;
+                box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 6px 18px rgba(79,70,229,0.28);">🛡️</div>
     <div>
-      <div style="font-size:15px;font-weight:700;color:#e2e8f0;line-height:1.2;">SAGE</div>
-      <div style="font-size:10.5px;color:#475569;margin-top:1px;">Secure AI Governance Engine</div>
+      <div style="font-size:16px;font-weight:700;color:#f4f6fb;line-height:1.05;letter-spacing:-0.02em;">SAGE</div>
+      <div style="font-size:10px;color:#5b6480;margin-top:3px;letter-spacing:0.03em;text-transform:uppercase;">Secure AI Governance Engine</div>
     </div>
   </div>
 </div>
@@ -716,11 +727,15 @@ with st.sidebar:
 
     if st.session_state.corpus_loaded:
         co = st.session_state.company_name[:24]
-        st.markdown(f'<span class="pill pill-ready">● Ready &nbsp;·&nbsp; {co}</span>', unsafe_allow_html=True)
-    else:
-        st.markdown('<span class="pill pill-setup">◐ Setup required</span>', unsafe_allow_html=True)
+        st.markdown(
+            f'<div style="display:flex;align-items:center;gap:8px;margin:10px 2px 2px;'
+            f'font-size:12px;color:#9aa3bd;font-weight:450;">'
+            f'<span style="width:7px;height:7px;border-radius:50%;background:#34d399;'
+            f'box-shadow:0 0 9px rgba(52,211,153,0.65);"></span>{co}</div>',
+            unsafe_allow_html=True,
+        )
 
-    st.markdown("<div style='margin-top:14px;'></div>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:12px;'></div>", unsafe_allow_html=True)
 
     # ── API key ───────────────────────────────────────────────────────────────
     # The key is provided by the server (Streamlit secret / env var) and is never
@@ -827,31 +842,34 @@ with st.sidebar:
 # ── Main: page header ─────────────────────────────────────────────────────────
 
 company = st.session_state.get("company_name", "")
+_status = ""
 if st.session_state.corpus_loaded:
-    pill_html = f'<span class="pill pill-ready">● Live &nbsp;·&nbsp; {company[:20]}</span>'
-else:
-    pill_html = '<span class="pill pill-setup">◐ Setup</span>'
+    _status = (
+        f'<div style="display:flex;align-items:center;gap:7px;font-size:12px;color:#9aa3bd;'
+        f'white-space:nowrap;">'
+        f'<span style="width:7px;height:7px;border-radius:50%;background:#34d399;'
+        f'box-shadow:0 0 9px rgba(52,211,153,0.65);"></span>{company[:22]}</div>'
+    )
 
 st.markdown(f"""
-<div style="
-  text-align:center;
-  background:linear-gradient(135deg,#0c1426 0%,#131c3a 50%,#0c1426 100%);
-  border:1px solid rgba(99,102,241,0.16);
-  border-radius:14px; padding:16px 24px;
-  box-shadow:0 4px 24px rgba(99,102,241,0.07);
-  margin-bottom:12px;
-">
-  <div style="display:inline-flex;align-items:center;gap:12px;justify-content:center;">
-    <span style="font-size:28px;filter:drop-shadow(0 0 10px rgba(99,102,241,0.5));line-height:1;">🛡️</span>
-    <div style="text-align:left;">
-      <div style="font-size:18px;font-weight:700;color:#f1f5f9;letter-spacing:-0.2px;line-height:1.2;">
-        SAGE — Compliance Assistant
+<div style="display:flex;align-items:center;justify-content:space-between;gap:14px;
+            padding:15px 20px;margin-bottom:16px;border-radius:16px;
+            background:rgba(255,255,255,0.025);border:1px solid rgba(255,255,255,0.07);">
+  <div style="display:flex;align-items:center;gap:13px;">
+    <div style="width:40px;height:40px;border-radius:11px;flex-shrink:0;
+                background:linear-gradient(140deg,#4f46e5,#7c73ff);
+                display:flex;align-items:center;justify-content:center;font-size:21px;
+                box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14);">🛡️</div>
+    <div>
+      <div style="font-size:17px;font-weight:700;color:#f4f6fb;letter-spacing:-0.02em;line-height:1.15;">
+        SAGE&nbsp;&nbsp;<span style="font-weight:500;color:#8b93ab;">Compliance Assistant</span>
       </div>
-      <div style="font-size:11.5px;color:#64748b;margin-top:3px;">
-        Enterprise compliance reasoning &nbsp;·&nbsp; {pill_html}
+      <div style="font-size:11.5px;color:#5b6480;margin-top:2px;">
+        Policy-grounded reasoning with citations and audit trails
       </div>
     </div>
   </div>
+  {_status}
 </div>
 """, unsafe_allow_html=True)
 
@@ -867,16 +885,17 @@ if st.session_state.corpus_loaded and st.session_state.chat_history:
 
 if not st.session_state.corpus_loaded:
     st.markdown("""
-<div style="text-align:center;padding:18px 0 14px;">
-  <div style="font-size:44px;filter:drop-shadow(0 0 22px rgba(99,102,241,0.5));
-              margin-bottom:8px;line-height:1;">🛡️</div>
-  <div style="font-size:19px;font-weight:700;color:#e2e8f0;margin-bottom:5px;
-              letter-spacing:-0.2px;">
+<div style="text-align:center;padding:24px 0 20px;">
+  <div style="width:60px;height:60px;border-radius:17px;margin:0 auto 16px;
+              background:linear-gradient(140deg,#4f46e5,#7c73ff);
+              display:flex;align-items:center;justify-content:center;font-size:30px;
+              box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14),0 14px 36px rgba(79,70,229,0.30);">🛡️</div>
+  <div style="font-size:27px;font-weight:800;color:#f4f6fb;margin-bottom:9px;letter-spacing:-0.03em;">
     Secure AI Governance Engine
   </div>
-  <div style="font-size:12.5px;color:#64748b;max-width:480px;margin:0 auto;line-height:1.65;">
-    Policy-grounded compliance answers with citations, risk scores, and audit trails —
-    for any organization, from startups to hospitals to schools.
+  <div style="font-size:13.5px;color:#8b93ab;max-width:510px;margin:0 auto;line-height:1.72;">
+    Policy-grounded compliance answers with citations, risk scores, and audit trails,
+    for any organization from startups to hospitals to schools.
   </div>
 </div>
 """, unsafe_allow_html=True)
@@ -886,34 +905,37 @@ if not st.session_state.corpus_loaded:
     with fc1:
         st.markdown("""
 <div class="feat-card">
-  <h4>📄 Any Organization</h4>
+  <div class="fc-ico">📄</div>
+  <h4>Any Organization</h4>
   <p>Upload your own PDF or TXT policy files. SAGE indexes them and answers questions grounded exclusively in your documents.</p>
 </div>""", unsafe_allow_html=True)
     with fc2:
         st.markdown("""
 <div class="feat-card">
-  <h4>🔍 Semantic RAG</h4>
-  <p>ChromaDB + OpenAI embeddings retrieves the most relevant policy sections — 80% fewer tokens vs. full-corpus injection.</p>
+  <div class="fc-ico">🔍</div>
+  <h4>Semantic RAG</h4>
+  <p>ChromaDB and OpenAI embeddings retrieve only the most relevant policy sections, using about 80% fewer tokens than full-corpus injection.</p>
 </div>""", unsafe_allow_html=True)
     with fc3:
         st.markdown("""
 <div class="feat-card">
-  <h4>📊 Audit &amp; Download</h4>
+  <div class="fc-ico">📊</div>
+  <h4>Audit &amp; Download</h4>
   <p>Every query is logged with risk score, citations, and reasoning. Export full reports as JSON or CSV for compliance review.</p>
 </div>""", unsafe_allow_html=True)
 
     st.markdown("""
-<div style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.11);
-            border-radius:10px;padding:10px 20px;text-align:center;margin-top:10px;">
-  <div style="font-size:10px;color:#3d4f6b;text-transform:uppercase;
-              letter-spacing:1px;margin-bottom:5px;font-weight:700;">6-Layer Pipeline</div>
-  <div style="font-size:12.5px;color:#6366f1;font-weight:500;">
+<div style="background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.07);
+            border-radius:14px;padding:14px 20px;text-align:center;margin-top:14px;">
+  <div style="font-size:9.5px;color:#5b6480;text-transform:uppercase;
+              letter-spacing:1.8px;margin-bottom:9px;font-weight:600;">How it works</div>
+  <div style="font-size:12.5px;color:#a5aecb;font-weight:450;line-height:1.7;">
     Security &nbsp;→&nbsp; Intent Router &nbsp;→&nbsp; RAG &nbsp;→&nbsp;
     LangGraph Agent &nbsp;→&nbsp; Citation Verifier &nbsp;→&nbsp; Scoring &amp; Audit
   </div>
 </div>
-<div style="text-align:center;margin-top:14px;font-size:12.5px;color:#6366f1;font-weight:600;">
-  👈 Enter your OpenAI API key and click <b>Load &amp; Index Documents</b> to start
+<div style="text-align:center;margin-top:18px;font-size:13px;color:#8b93ab;">
+  Pick a demo organization or upload your policies from the sidebar to begin.
 </div>
 """, unsafe_allow_html=True)
 
@@ -940,32 +962,24 @@ if not st.session_state.chat_history:
     quick_qs = QUICK_QUESTIONS
 
     st.markdown("""
-<div style="font-size:10.5px;font-weight:700;color:#3d4f6b;
-            text-transform:uppercase;letter-spacing:0.9px;
-            margin:20px 0 10px;">
-  ✦ Quick Questions &nbsp;—&nbsp; click to ask instantly
+<div style="font-size:10px;font-weight:600;color:#5b6480;
+            text-transform:uppercase;letter-spacing:1.6px;
+            margin:22px 0 12px;">
+  Try asking
 </div>
 """, unsafe_allow_html=True)
 
     col_a, col_b = st.columns(2, gap="medium")
     for i, qtext in enumerate(quick_qs):
         with (col_a if i % 2 == 0 else col_b):
-            if st.button(f"💬  {qtext}", key=f"chip_{i}", use_container_width=True):
+            if st.button(qtext, key=f"chip_{i}", use_container_width=True):
                 st.session_state.pending_question = qtext
                 st.rerun()
 
     st.markdown("""
-<div style="
-  text-align:center; margin-top:18px; padding:11px 16px;
-  background:rgba(99,102,241,0.04);
-  border:1px solid rgba(99,102,241,0.1);
-  border-radius:9px;
-">
-  <span style="font-size:12.5px;color:#475569;">
-    Or type your own question below
-    &nbsp;·&nbsp;
-    Ask for a <b style="color:#6366f1;">report</b> to see session analytics
-  </span>
+<div style="text-align:center;margin-top:20px;font-size:12.5px;color:#6b7492;">
+  Type your own question below, or ask for a
+  <b style="color:#a5b4fc;font-weight:600;">report</b> to see session analytics.
 </div>
 """, unsafe_allow_html=True)
 
@@ -999,7 +1013,7 @@ if query:
 
         elif is_injection(q) or is_injection(sanitize_query(q)):
             blocked_msg = (
-                "I'm a compliance assistant — I can only answer questions grounded "
+                "I'm a compliance assistant. I can only answer questions grounded "
                 "in your organization's policy documents. Try asking about specific "
                 "rules, requirements, whether an activity is permitted, or what "
                 "happens in a particular scenario."
@@ -1010,7 +1024,7 @@ if query:
 
         elif _is_out_of_scope(q):
             msg = (
-                "I'm a compliance assistant — I can only answer questions grounded "
+                "I'm a compliance assistant. I can only answer questions grounded "
                 "in your organization's policy documents. Try asking about specific "
                 "rules, requirements, whether an activity is permitted, or what "
                 "happens in a particular scenario."
@@ -1053,6 +1067,6 @@ if st.session_state.show_audit:
     for e in reversed(st.session_state.audit_logger.recent(20)):
         with st.expander(
             f"`{e['entry_id']}` · {e['timestamp'][:19]} · "
-            f"Risk: {e['risk_level']} · Conf: {e.get('confidence_score') or '—'}"
+            f"Risk: {e['risk_level']} · Conf: {e.get('confidence_score') or 'N/A'}"
         ):
             st.json(e)
