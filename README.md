@@ -1,4 +1,4 @@
-# SAGE — Secure AI Governance Engine
+# SAGE: Secure AI Governance Engine
 
 **An enterprise-grade AI compliance assistant that interprets company policy documents, answers employee questions, detects policy conflicts, and defends against prompt injection attacks.**
 
