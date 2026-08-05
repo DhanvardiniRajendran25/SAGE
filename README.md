@@ -2,7 +2,7 @@
 
 **An enterprise-grade AI compliance assistant that interprets company policy documents, answers employee questions, detects policy conflicts, and defends against prompt injection attacks.**
 
-SAGE was built across five development phases — from a zero-shot prompt experiment to a fully hardened, multi-organisation RAG agent with a production Streamlit interface. It demonstrates the complete lifecycle of an LLM application: prompting → retrieval → agent architecture → production hardening → adversarial security.
+SAGE was built across five development phases, from a zero-shot prompt experiment to a fully hardened, multi-organisation RAG agent with a production Streamlit interface. It demonstrates the complete lifecycle of an LLM application: prompting → retrieval → agent architecture → production hardening → adversarial security.
 
 ---
 
@@ -11,14 +11,14 @@ SAGE was built across five development phases — from a zero-shot prompt experi
 Employees ask natural-language compliance questions in plain English:
 
 > *"Can I work from Germany for 6 weeks?"*
-> *"I saved customer PII to my personal laptop — is that a violation?"*
+> *"I saved customer PII to my personal laptop, is that a violation?"*
 > *"I just started 45 days ago. Am I eligible for remote work?"*
 
 SAGE reads the company's uploaded policy documents (PDF or TXT), retrieves the relevant sections using hybrid RAG, reasons through them with a LangGraph ReAct agent, and returns a structured, citation-grounded response:
 
 ```
-Answer:          You are not eligible — POL-RW-2025 §2 requires 90-day probation completion.
-Citations:       - POL-RW-2025 §2 — Eligibility
+Answer:          You are not eligible, POL-RW-2025 §2 requires 90-day probation completion.
+Citations:       - POL-RW-2025 §2, Eligibility
 Risk Level:      Medium
 Reasoning:       Employee tenure (45 days) is below the 90-day threshold.
                  The request cannot proceed until probation is completed.
@@ -26,7 +26,7 @@ Confidence:      74 / 100
 Policy Tension:  None detected.
 ```
 
-It also blocks all prompt injection attempts — persona overrides, instruction smuggling, false attribution — before they reach the model.
+It also blocks all prompt injection attempts, persona overrides, instruction smuggling, false attribution, before they reach the model.
 
 ---
 
@@ -75,7 +75,7 @@ SAGE-SecureAIGovernanceEngine/
 │   └── tests/
 │       └── test_components.py        # 28 unit + integration tests (no API key needed)
 │
-├── SAGE_Complete.ipynb               # Master notebook — all 5 phases, 116 cells
+├── SAGE_Complete.ipynb               # Master notebook, all 5 phases, 116 cells
 │
 ├── Iterative_Notebooks/              # Phase-by-phase development history
 │   ├── SAGE_Phase1_SystemPromptDesign.ipynb
@@ -97,7 +97,7 @@ SAGE-SecureAIGovernanceEngine/
 
 ## Development Phases
 
-### Phase 1 — System Prompt Design
+### Phase 1, System Prompt Design
 
 **Goal:** Identify the best prompting strategy for compliance reasoning through systematic experimentation.
 
@@ -125,7 +125,7 @@ All 13 techniques were run on the same test query so results are directly compar
 
 ---
 
-### Phase 2 — System Hardening & Evaluation
+### Phase 2, System Hardening & Evaluation
 
 **Goal:** Stress-test the system prompt, build evaluation infrastructure, and add RAG.
 
@@ -162,7 +162,7 @@ Structured test suite with expected risk level, triggered policies, and relevant
 
 ---
 
-### Phase 3 — Agent Architecture
+### Phase 3, Agent Architecture
 
 **Goal:** Replace the static prompt with a dynamic ReAct agent that uses tools to reason.
 
@@ -172,7 +172,7 @@ Built with `StateGraph` + `ToolNode` + `tools_condition`. The agent iterates ove
 
 | Tool | What It Does |
 |---|---|
-| `search_policy` | Hybrid RAG retrieval — returns top-7 re-ranked policy chunks |
+| `search_policy` | Hybrid RAG retrieval, returns top-7 re-ranked policy chunks |
 | `check_cross_references` | Identifies which of the 3 policies are triggered by the scenario |
 | `assess_risk` | Structured High / Medium / Low risk classification with severity score |
 
@@ -186,7 +186,7 @@ Batch-mode evaluation pipeline set up locally. Enables reproducible, version-con
 5 bottlenecks identified with mitigations documented (false grounding gate positives, distance threshold tuning, multi-policy synthesis failures, edge-case disambiguation gaps, keyword fallback coverage).
 
 **Iteration Log**
-8 documented prompt iterations V0→V4 — each with problem identified, change made, and measurable outcome.
+8 documented prompt iterations V0→V4, each with problem identified, change made, and measurable outcome.
 
 **LLM-as-Judge Evaluation**
 GPT-4o-mini scores responses on 5 dimensions: accuracy, groundedness, completeness, clarity, risk classification (each 1–10). Average: ≥8.5/10.
@@ -195,7 +195,7 @@ GPT-4o-mini scores responses on 5 dimensions: accuracy, groundedness, completene
 
 ---
 
-### Phase 4 — Production Enhancements
+### Phase 4, Production Enhancements
 
 **Goal:** Build a production-ready system with enterprise-grade components and a working app.
 
@@ -203,10 +203,10 @@ GPT-4o-mini scores responses on 5 dimensions: accuracy, groundedness, completene
 
 | Component | What It Does |
 |---|---|
-| `SAGEConversationSession` | Rolling 6-turn memory — employees ask follow-ups without restating context |
+| `SAGEConversationSession` | Rolling 6-turn memory, employees ask follow-ups without restating context |
 | `ConfidenceScorer` | Numeric 0–100 score: citation density + risk clarity + keyword coverage − ambiguity penalty |
 | `SeverityWeightedScorer` | 0–100 severity score weighted by number of policies triggered, international scope, data exposure |
-| `PolicyConflictDetector` | 5 named conflict rules (CF-001–CF-005) — flags when two policies apply with conflicting requirements |
+| `PolicyConflictDetector` | 5 named conflict rules (CF-001–CF-005), flags when two policies apply with conflicting requirements |
 | `CitationVerifier` | Cross-checks every cited section against actual policy text; reports groundedness percentage |
 | `AuditLogger` | JSON audit log per query: session ID, risk level, confidence, timestamp, citations, token usage |
 | `FeedbackCollector` | 4-dimension ratings (clarity, accuracy, usefulness, trust); aggregates recommendation rate |
@@ -215,16 +215,16 @@ GPT-4o-mini scores responses on 5 dimensions: accuracy, groundedness, completene
 
 | Rule | Conflict |
 |---|---|
-| CF-001 | Local Storage vs Remote Mobility — encryption required AND local storage banned simultaneously |
-| CF-002 | International Work + EEA Transfer Compounding — different approvers (HR vs DPO) both required |
-| CF-003 | BYOD Enrollment vs Data Prohibition — MDM required while company data storage is prohibited |
-| CF-004 | Encryption ≠ Exemption — §5.3 local storage ban applies even with AES-256 encryption |
-| CF-005 | Benefits Gap in International Approval — health insurance not resolved by extended approval |
+| CF-001 | Local Storage vs Remote Mobility, encryption required AND local storage banned simultaneously |
+| CF-002 | International Work + EEA Transfer Compounding, different approvers (HR vs DPO) both required |
+| CF-003 | BYOD Enrollment vs Data Prohibition, MDM required while company data storage is prohibited |
+| CF-004 | Encryption ≠ Exemption, §5.3 local storage ban applies even with AES-256 encryption |
+| CF-005 | Benefits Gap in International Approval, health insurance not resolved by extended approval |
 
-**4th Agent Tool Added:** `detect_policy_conflicts` — called before final reasoning so tensions are surfaced explicitly in the response.
+**4th Agent Tool Added:** `detect_policy_conflicts`, called before final reasoning so tensions are surfaced explicitly in the response.
 
 **Comprehensive Evaluation Suite**
-- 28 unit tests across all 8 component classes — no API key required (mock responses)
+- 28 unit tests across all 8 component classes, no API key required (mock responses)
 - 5 integration tests (full pipeline: conflict → LLM → score → cite → audit)
 - Regression tests: baseline vs enhanced across all 57 cases
 - Metrics dashboard with targets and actuals
@@ -243,13 +243,13 @@ GPT-4o-mini scores responses on 5 dimensions: accuracy, groundedness, completene
 | Startup | LaunchPad Startup | Remote-First Work, Intellectual Property, Code of Conduct |
 | Retail | RetailFlow Corp | Customer Data, Employee Handbook, Store Safety |
 
-- Dynamic system prompt builder (`prompts.py`) — adapts reasoning rules and critical checklist per org type
-- Built-in 15-policy corpus (3 policies × 5 org types) — loadable instantly via Load Demo dropdown
+- Dynamic system prompt builder (`prompts.py`), adapts reasoning rules and critical checklist per org type
+- Built-in 15-policy corpus (3 policies × 5 org types), loadable instantly via Load Demo dropdown
 - `company_name` propagated to LangGraph agent system prompt for org-aware responses
 
 ---
 
-### Phase 5 — Prompt Security & Adversarial Robustness
+### Phase 5, Prompt Security & Adversarial Robustness
 
 **Goal:** Harden the system against all known prompt injection techniques and verify with a comprehensive test suite.
 
@@ -270,9 +270,9 @@ Additional attack patterns tested: false attribution ("you previously said..."),
 | DM-1 | `INJECTION_PATTERNS` | Expanded 10 → 52 patterns covering 9 attack families |
 | DM-2 | `sanitize_query()` | Strips role tokens (`[INST]`, `<sys>`, `[OVERRIDE]`), caps payload at 1,200 chars |
 | DM-3 | System prompt | Identity lock, prompt confidentiality, conversation integrity, embedded instruction resistance, hypothetical framing guard |
-| DM-4 | System prompt | **Authority claim resistance** — rejects supervisor/HR/Legal override claims; never says "Understood" to claimed exemptions |
-| DM-5 | Agent prompt | **Org mismatch detection** — flags when user asks about a different org (Google, Amazon) than the loaded documents |
-| DM-6 | Agent prompt | **Agent hard constraints** — `_AGENT_WORKFLOW_BASE` now carries all behavioral rules (contact info, no hallucination, no vague fallback) directly to the LangGraph agent |
+| DM-4 | System prompt | **Authority claim resistance**, rejects supervisor/HR/Legal override claims; never says "Understood" to claimed exemptions |
+| DM-5 | Agent prompt | **Org mismatch detection**, flags when user asks about a different org (Google, Amazon) than the loaded documents |
+| DM-6 | Agent prompt | **Agent hard constraints**, `_AGENT_WORKFLOW_BASE` now carries all behavioral rules (contact info, no hallucination, no vague fallback) directly to the LangGraph agent |
 
 **9 Injection Pattern Families (52 total patterns)**
 1. Classic overrides (`ignore/disregard/forget previous/prior instructions`)
@@ -290,23 +290,23 @@ Additional attack patterns tested: false attribution ("you previously said..."),
 ```
 L0  sanitize_query()     Strip role tokens, enforce 1,200-char cap
 L1  is_injection()       52-pattern regex match across all 9 families
-L2  _is_out_of_scope()   Policy grounding gate — reject non-policy topics
+L2  _is_out_of_scope()   Policy grounding gate, reject non-policy topics
 L3  Grounding check      NO_CONTEXT_SIGNAL fallback prevention
-L4  ReAct agent          Tool-grounded reasoning only — no free-form generation
+L4  ReAct agent          Tool-grounded reasoning only, no free-form generation
 L5  System prompt        Identity lock + constraint language in every call
 L6  CitationVerifier     Response groundedness check post-generation
 L7  AuditLogger          Full query / response / risk audit trail
 ```
 
-**Verified Results — 62-Case Security Test Suite + 7-Round Live Testing**
+**Verified Results, 62-Case Security Test Suite + 7-Round Live Testing**
 
 | Metric | Result |
 |---|---|
-| Attack block rate | **100%** — 37 / 37 attack vectors blocked |
-| Legit query pass rate | **100%** — 25 / 25 legitimate queries allowed |
+| Attack block rate | **100%**, 37 / 37 attack vectors blocked |
+| Legit query pass rate | **100%**, 25 / 25 legitimate queries allowed |
 | False negatives | **0** |
-| False positives | **1 → 0** (injection false positive on "what are your system rules for remote employees?" — fixed with word-boundary lookahead) |
-| Live adversarial rounds | **9 / 9 passed** — social engineering, authority pretext, pipeline introspection, false context, admin override, persona injection |
+| False positives | **1 → 0** (injection false positive on "what are your system rules for remote employees?", fixed with word-boundary lookahead) |
+| Live adversarial rounds | **9 / 9 passed**, social engineering, authority pretext, pipeline introspection, false context, admin override, persona injection |
 
 ---
 
@@ -319,10 +319,10 @@ User Query
 L0: sanitize_query()          Strip [INST] <sys> tokens, cap at 1,200 chars
     │
     ▼
-L1: is_injection()            52-pattern regex — BLOCKED if match
+L1: is_injection()            52-pattern regex, BLOCKED if match
     │
     ▼
-L2: _is_out_of_scope()        Grounding gate — BLOCKED if no policy relevance
+L2: _is_out_of_scope()        Grounding gate, BLOCKED if no policy relevance
     │                         _CONTACT_BYPASS_KW: phone/address queries always pass
     │                         _GENERAL_KNOWLEDGE_KW: essays/trivia always blocked
     ▼
@@ -371,11 +371,11 @@ Streamlit UI
 | Policy conflict detection | 5/5 rules | **5/5** (CF-001–CF-005) |
 | Prompting techniques tested | ≥10 | **13** (7 foundational + 5 advanced + meta) |
 | Evaluation dataset size | ≥30 | **57 cases** |
-| Supported org types | — | **5** (Tech, Education, Healthcare, Startup, Retail) |
-| Injection patterns | — | **52 patterns, 9 attack families** |
-| Query synonym mappings | — | **57** (contact, protected characteristics, reporting, BYOD, data handling) |
-| Defensive measures | — | **6** (DM-1 → DM-6, including authority resistance + org mismatch) |
-| Live adversarial test rounds | — | **7 rounds, 100% blocked** |
+| Supported org types |, | **5** (Tech, Education, Healthcare, Startup, Retail) |
+| Injection patterns |, | **52 patterns, 9 attack families** |
+| Query synonym mappings |, | **57** (contact, protected characteristics, reporting, BYOD, data handling) |
+| Defensive measures |, | **6** (DM-1 → DM-6, including authority resistance + org mismatch) |
+| Live adversarial test rounds |, | **7 rounds, 100% blocked** |
 
 ---
 
@@ -446,17 +446,17 @@ The app opens at **http://localhost:8501**
 
 ### 5. First steps in the app
 
-**Option A — Load a built-in demo org:**
+**Option A, Load a built-in demo org:**
 1. In the sidebar, choose one of the 5 demo organisations from the **"Try a demo org…"** dropdown:
    - 💻 TechNova Inc. (remote work, data privacy, information security)
    - 🎓 EduTrack Academy (academic integrity, student privacy, IT acceptable use)
    - 🏥 MedCore Health (PHI/HIPAA-style, workplace safety, staff conduct)
    - 🚀 LaunchPad Startup (IP assignment, remote-first, code of conduct)
    - 🛒 RetailFlow Corp (PCI-DSS, customer data, employee handbook)
-2. Click **"🎯 Load Demo"** — the corpus is indexed automatically
+2. Click **"🎯 Load Demo"**, the corpus is indexed automatically
 3. Ask a compliance question or click a quick-start chip
 
-**Option B — Upload your own policy documents:**
+**Option B, Upload your own policy documents:**
 1. Use the file uploader in the sidebar to upload one or more PDF or TXT policy files
 2. Type your organisation name in the text box
 3. Click **"🚀 Load & Index"**
@@ -484,7 +484,7 @@ Open **http://localhost:8501**
 
 ## Running Tests
 
-Tests validate all component logic against mock responses — no OpenAI API key needed.
+Tests validate all component logic against mock responses, no OpenAI API key needed.
 
 ```bash
 cd app
@@ -501,7 +501,7 @@ SAGE is deployed on **Hugging Face Spaces** (Docker):
 
 **[https://yeshwanthbalaji-sage-compliance-assistant.hf.space](https://yeshwanthbalaji-sage-compliance-assistant.hf.space)**
 
-No setup required — open the link, load a demo org, and start asking compliance questions.
+No setup required, open the link, load a demo org, and start asking compliance questions.
 
 ---
 
@@ -514,7 +514,7 @@ pip install jupyter
 jupyter notebook SAGE_Complete.ipynb
 ```
 
-Most cells use `MOCK_MODE = True` by default — you can step through all the logic without API calls. Set `MOCK_MODE = False` and add your API key to run live.
+Most cells use `MOCK_MODE = True` by default, you can step through all the logic without API calls. Set `MOCK_MODE = False` and add your API key to run live.
 
 The phase notebooks in `Iterative_Notebooks/` show the development history for each phase separately.
 
@@ -525,14 +525,14 @@ The phase notebooks in `Iterative_Notebooks/` show the development history for e
 ## Sample Questions to Try
 
 **Remote Work**
-- "I want to work from Portugal for 90 days — what approvals do I need?"
+- "I want to work from Portugal for 90 days, what approvals do I need?"
 - "I'm a contractor. Can I work remotely from home?"
 - "I just started 45 days ago. Am I eligible for remote work?"
 - "I need to work from Japan for 75 days to support a client project."
 
 **Data Privacy**
 - "What is the retention period for customer PII?"
-- "We need to send customer data to a partner in Brazil — what safeguards apply?"
+- "We need to send customer data to a partner in Brazil, what safeguards apply?"
 - "An EU resident asked to see all data we hold about them. Who handles this?"
 - "What is the deadline for reporting a data breach?"
 
@@ -559,14 +559,14 @@ The phase notebooks in `Iterative_Notebooks/` show the development history for e
 SAGE works with **any company's policies**. Upload any PDF or plain-text file with a standard section structure:
 
 ```
-Section 1 — Purpose
+Section 1, Purpose
 This policy applies to...
 
-Section 2 — Scope
+Section 2, Scope
 2.1 All full-time employees...
 2.2 Contractors are excluded...
 
-Section 3 — Remote Work Eligibility
+Section 3, Remote Work Eligibility
 3.1 Employees who have completed the 90-day probationary period...
 ```
 
