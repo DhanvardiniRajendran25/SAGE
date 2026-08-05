@@ -499,7 +499,7 @@ Expected: **28 passed**
 
 SAGE is deployed on **Hugging Face Spaces** (Docker):
 
-**[[https://yeshwanthbalaji-sage-compliance-assistant.hf.space](https://sage-compliance-assistant.streamlit.app/)]**
+**[https://sage-compliance-assistant.streamlit.app/](https://sage-compliance-assistant.streamlit.app/)**
 
 No setup required, open the link, load a demo org, and start asking compliance questions.
 
