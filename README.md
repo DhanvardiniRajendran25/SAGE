@@ -4,7 +4,7 @@
 
 SAGE was built across five development phases, from a zero-shot prompt experiment to a fully hardened, multi-organisation RAG agent with a production Streamlit interface. It demonstrates the complete lifecycle of an LLM application: prompting → retrieval → agent architecture → production hardening → adversarial security.
 
-**[https://sage-compliance-assistant.streamlit.app/](SAGE APP)**
+**[https://sage-compliance-assistant.streamlit.app/](https://sage-compliance-assistant.streamlit.app/)**
 
 ---
 
