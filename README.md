@@ -60,6 +60,11 @@ SAGE sits in between: grounded in the actual policy text, automated, auditable, 
 
 ---
 
+<img width="3840" height="2160" alt="SAGE-architecture" src="https://github.com/user-attachments/assets/4a67d370-f95a-43f8-ab36-831e8a1219bc" />
+
+
+---
+
 ## Repository Structure
 
 ```
