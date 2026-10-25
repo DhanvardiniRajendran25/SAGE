@@ -1,6 +1,6 @@
 # SAGE: Secure AI Governance Engine
 
-**An enterprise-grade AI compliance assistant that interprets company policy documents, answers employee questions, detects policy conflicts, and defends against prompt injection attacks.**
+**An enterprise-grade AI compliance assistant that interprets company policy documents, answers employee questions, detects policy conflicts, and defends against prompt injection attacks.** 
 
 SAGE was built across five development phases, from a zero-shot prompt experiment to a fully hardened, multi-organisation RAG agent with a production Streamlit interface. It demonstrates the complete lifecycle of an LLM application: prompting → retrieval → agent architecture → production hardening → adversarial security.
 
